@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Number</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500&display=swap" rel="stylesheet">
+</head>
+<style>
+    * {
+        font-family:'Kanit',sans-serif;
+    }
+    #daddycontainer {
+        width:60vw;
+        margin-left:20vw;
+        border:2px solid black;
+        text-align:center;
+        height:45vh;
+        margin-top:15vh;
+    }
+    #head {
+        font-size:50px;
+    }
+    #maxNum {
+        font-size:50px;
+        height:50px;
+        width:110px;
+        border:0px solid white;
+        transition:1s;
+    }
+    #maxNum:hover {
+        transition:1s;
+        border:2px solid black;
+    }
+    #guess {
+        width:120px;
+        font-size:40px;
+    }
+    #guessbutton {
+        font-size:40px;
+    }
+    #retry {
+        font-size:30px;
+        display:none;
+    }
+</style>
+<body>
+    <div id="daddycontainer">
+        <p id="head">GUESS THE NUMBER, 1-<input id="maxNum" value="20" maxlength="3" type="number" onblur="changeMax()" onkeydown="if (event.key == 'Enter') {document.getElementById('maxNum').blur()}"></p>
+        <input id="guess" type="number" onkeypress="if (event.key == 'Enter') {document.getElementById('guessNum').innerHTML = guess(); document.getElementById('guess').blur()}"><button id="guessbutton"onclick="document.getElementById('guessNum').innerHTML = guess()">Guess!</button>
+        <div id="guessNum"></div><br>
+        <button id="retry" onclick="changeMax()">Retry</button>
+    </div>
+</body>
+<script>
+    if (localStorage.getItem("maxnum") != undefined) {
+        document.getElementById("maxNum").value = localStorage.getItem("maxnum");
+    }
+    var computerNum = Math.round(Math.random() * (document.getElementById("maxNum").value - 1)) + 1;
+    let guessCount = 0;
+    function randomNum() {
+        computerNum = Math.round(Math.random() * (document.getElementById("maxNum").value - 1)) + 1;
+        console.log(computerNum);
+    }
+    function guess() {
+        document.getElementById("retry").style.display = "inline";
+        var playerGuess = document.getElementById("guess").value;
+        document.getElementById("guess").value = "";
+        guessCount++;
+        if (playerGuess < computerNum) {
+            return "My number is greater than " + playerGuess + "! You have guessed " + guessCount + " times.";
+        } else if (playerGuess > computerNum) {
+            return "My number is less than " + playerGuess + "! You have guessed " + guessCount + " times.";
+        } else if (playerGuess == computerNum) {
+            document.getElementById("guess").disabled = true;
+            return "You guessed it! It took you " + guessCount + " tries!";
+        }
+    }
+
+    function changeMax() {
+        if (Number(document.getElementById("maxNum").value) > 0) {
+            localStorage.setItem("maxnum",document.getElementById("maxNum").value);
+            console.log(localStorage.getItem("maxnum"));
+            location.reload();
+        } else {
+            console.log("too small");
+        }
+    }
+    setInterval(fixlength,10)
+    function fixlength() {
+        document.getElementById('maxNum').value = document.getElementById('maxNum').value.slice(0,3);
+    }
+</script>
+</html>
